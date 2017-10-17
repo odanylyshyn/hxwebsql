@@ -1,0 +1,12 @@
+{
+	"name": "hxwebsql",
+	"url": "https://github.com/odanylyshyn/hxwebsql",
+	"license": "MIT",
+	"tags": ["haxe","sqlite","websql","js","javascript","cordova","phonegap","android","ios"],
+	"description": "",
+	"version": "0.1.0",
+	"classPath": "src/",
+	"releasenote": "First release.",
+	"contributors": ["odanylyshyn"],
+	"dependencies": { }
+}
