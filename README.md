@@ -24,4 +24,12 @@ q2.set('score', 456);
 tr2.addQuery(q2);
 
 tr2.exec();
+
+// using method "mset"
+var tr3 = new Transaction(db);
+var q3 = new SqlQuery('records', SqlOperator.INSERT);
+q3.mset({username: 'Peter', score: 675});
+tr3.addQuery( q3 );
+tr3.exec();
+		
 ```
