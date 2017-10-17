@@ -30,6 +30,13 @@ class SqlQuery extends DbQueryResult {
 	    setsMap.set(fieldName, valueToStr(value));
 	}
 
+	public function mset(data:Dynamic):Void {
+		for (fieldName in Reflect.fields(data)) {
+			setsMap.set(fieldName, valueToStr( Reflect.field(data, fieldName)) );
+		}
+	    //setsMap.set(fieldName, valueToStr(value));
+	}
+
 	public function whereEq(fieldName:String, value:Any):Void {
 	    whereSign(fieldName, '=', value);
 	}
