@@ -1,35 +1,84 @@
-# under construction
+### under construction
 This project is in the initial stage of development. Most of the functionality is still planned.
 
-# usage example
+# Examples
+
+### Open database
+Create database, if missing.
 ```haxe
-// create or open database
 var db = new Database("TestDB");
+```
 
-// create table
-var tr1 = new Transaction(db);
-tr1.addQuery( new SqlQuery('CREATE TABLE IF NOT EXISTS records (username, score)') );
-tr1.exec();
+### Run any SQL query
+Here is an example of creating a table.
+```haxe
+var tr = new Transaction(db);
+tr.addQuery( new SqlQuery('CREATE TABLE IF NOT EXISTS records (username, score)') );
+tr.exec();
+```
 
-// add two rows
-var tr2 = new Transaction(db);
+### Insert
+```haxe
+var tr = new Transaction(db);
 var q1 = new SqlQuery('records', SqlOperator.INSERT);
 q1.set('username', 'Bob');
 q1.set('score', 123);
-tr2.addQuery(q1);
+tr.addQuery(q1);
 
 var q2 = new SqlQuery('records', SqlOperator.INSERT);
 q2.set('username', 'Joe');
 q2.set('score', 456);
-tr2.addQuery(q2);
+tr.addQuery(q2);
 
-tr2.exec();
+tr.exec();
+```
 
-// using method "mset"
-var tr3 = new Transaction(db);
-var q3 = new SqlQuery('records', SqlOperator.INSERT);
-q3.mset({username: 'Peter', score: 675});
-tr3.addQuery( q3 );
-tr3.exec();
-		
+### Insert, another way
+```haxe
+var tr = new Transaction(db);
+var q = new SqlQuery('records', SqlOperator.INSERT);
+q.mset({username: 'Peter', score: 675});
+tr.addQuery(q);
+tr.exec();
+```
+
+### Update
+```haxe
+var tr = new Transaction(db);
+
+var q1 = new SqlQuery('records', SqlOperator.UPDATE);
+q1.set('score', 900);
+q1.whereEq('username', 'Joe');   // WHERE `username`='Joe'
+tr.addQuery(q1);
+
+var q2 = new SqlQuery('records', SqlOperator.UPDATE);
+q2.set('score', 800);
+q2.whereId(3);                   // WHERE `rowid`='3'
+tr.addQuery(q2);
+
+tr.exec();
+```
+
+### Update, where list of variants
+```haxe
+var tr = new Transaction(db);
+
+var q = new SqlQuery('records', SqlOperator.UPDATE);
+q.set('score', 555);
+q.whereList('username', ['Bob', 'Joe']);     // WHERE `username`='Bob' OR `username`='Joe'
+tr.addQuery(q);
+
+tr.exec();
+```
+
+### Update, where match LIKE-pattern
+```haxe
+var tr = new Transaction(db);
+
+var q = new SqlQuery('records', SqlOperator.UPDATE);
+q.set('score', 1000);
+q.whereMatch('username', '%er');             // WHERE `username` LIKE '%er'
+tr.addQuery(q);
+
+tr.exec();
 ```

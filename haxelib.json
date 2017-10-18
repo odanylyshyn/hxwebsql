@@ -4,9 +4,9 @@
 	"license": "MIT",
 	"tags": ["haxe","sqlite","websql","js","javascript","cordova","phonegap","android","ios"],
 	"description": "",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"classPath": "src/",
-	"releasenote": "SqlQuery.mset() added",
+	"releasenote": "added `update` and `where` in SqlQuery",
 	"contributors": ["odanylyshyn"],
 	"dependencies": { }
 }

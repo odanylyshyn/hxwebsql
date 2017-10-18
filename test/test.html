@@ -61,6 +61,59 @@ var q = new SqlQuery('records', SqlOperator.INSERT);
 q.mset({username: 'Peter', score: 675});
 tr.addQuery(q);
 tr.exec();</pre>
+
+
+		<hr>
+
+		<h3>Update</h3>
+		<button id="btnUpdate">RUN</button>
+		<pre>
+var tr = new Transaction(db);
+
+var q1 = new SqlQuery('records', SqlOperator.UPDATE);
+q1.set('score', 900);
+q1.whereEq('username', 'Joe');
+tr.addQuery(q1);
+
+var q2 = new SqlQuery('records', SqlOperator.UPDATE);
+q2.set('score', 800);
+q2.whereId(3);
+tr.addQuery(q2);
+
+tr.exec();</pre>
+
+
+		<hr>
+
+		<h3>Update, where list of variants</h3>
+		<button id="btnUpdateList">RUN</button>
+		<pre>
+var tr = new Transaction(db);
+
+var q = new SqlQuery('records', SqlOperator.UPDATE);
+q.set('score', 555);
+q.whereList('username', ['Bob', 'Joe']);
+tr.addQuery(q);
+
+tr.exec();</pre>
+
+
+
+		<hr>
+
+		<h3>Update, where match LIKE-pattern</h3>
+		<button id="btnUpdateMatch">RUN</button>
+		<pre>
+var tr = new Transaction(db);
+
+var q = new SqlQuery('records', SqlOperator.UPDATE);
+q.set('score', 1000);
+q.whereMatch('username', '%er');
+tr.addQuery(q);
+
+tr.exec();</pre>
+
+
 		
 
 	</div>
