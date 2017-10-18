@@ -3,16 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <title>Test haxe websql lib</title>
-    <script src="test.js"></script>
+    <script src="test.js" defer="defer"></script>
+    <style>
+    	#container { display: none; }
+    	#nojs { width: 400px; margin: 200px auto; border: 3px solid #F33; font-size: 24px; padding: 30px; background-color: #ccc; }
+    	pre { background-color: #333; font-size: 12px; color: #EFE; padding: 10px; text-align: left; }
+    	button { width: 100px; }
+    </style>
 </head>
 <body>
-	At first make test project: build_test.hxml<br/>
-	<hr/>
-	Next:<br/>
-	Use to Chrome browser to check working this script.<br/>
-	Open the Developer Tools  (F12).<br/>
-	See to Application-Storage-WebSQL.<br/>
-	<hr/>
-	You can make changes to the code (Test.hx) and see the result after reloading the page.
+	<div id="nojs">
+		File test.js not found<br>
+		Please, run the <pre>&gt; haxe build_test.hxml</pre> for compile test project.
+	</div>
+	<div id="container">
+		Use to Chrome browser to check working this script.<br/>
+		Open the Developer Tools  (F12).<br/>
+		See to Application-Storage-WebSQL<br/>
+		(for update view result - reselect to item database or table in left sidebar)
+
+		<hr>
+
+		<h3>Create table</h3>
+		<button id="btnCreateTable">RUN</button>
+		<pre>
+var tr = new Transaction(db);
+tr.addQuery( new SqlQuery('CREATE TABLE IF NOT EXISTS records (username, score)') );
+tr.exec();</pre>
+		
+
+		<hr>
+
+		<h3>Insert two rows</h3>
+		<button id="btnInsertTwo">RUN</button>
+		<pre>
+var tr = new Transaction(db);
+var q1 = new SqlQuery('records', SqlOperator.INSERT);
+q1.set('username', 'Bob');
+q1.set('score', 123);
+tr.addQuery(q1);
+
+var q2 = new SqlQuery('records', SqlOperator.INSERT);
+q2.set('username', 'Joe');
+q2.set('score', 456);
+tr.addQuery(q2);
+
+tr.exec();</pre>
+
+
+		<hr>
+
+		<h3>Insert row, using mset()</h3>
+		<button id="btnInsertMset">RUN</button>
+		<pre>
+var tr = new Transaction(db);
+var q = new SqlQuery('records', SqlOperator.INSERT);
+q.mset({username: 'Peter', score: 675});
+tr.addQuery(q);
+tr.exec();</pre>
+		
+
+	</div>
 </body>
 </html>
