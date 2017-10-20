@@ -1,6 +1,6 @@
 package js.sqlite;
 
-@:native('WebSQLDatabase')
+@:native("WebSQLDatabase")
 extern class WebSQLDatabase {
     public function transaction(
         txnCallback: WebSQLTransaction -> Void,
@@ -9,7 +9,7 @@ extern class WebSQLDatabase {
     ):Void;
 }
 
-@:native('WebSQLTransaction')
+@:native("WebSQLTransaction")
 extern class WebSQLTransaction {
     public function executeSql(
         sql:String,
@@ -19,12 +19,12 @@ extern class WebSQLTransaction {
     ):Void;
 }
 
-@:native('SQLiteResult')
+@:native("SQLiteResult")
 extern class SQLiteResult {
     public var rows:WebSQLRows;
 }
 
-@:native('WebSQLRows')
+@:native("WebSQLRows")
 extern class WebSQLRows {
     public var length:Int;
     public function item(i:Int):Dynamic;

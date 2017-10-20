@@ -4,9 +4,9 @@
 	"license": "MIT",
 	"tags": ["haxe","sqlite","websql","js","javascript","cordova","phonegap","android","ios"],
 	"description": "",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"classPath": "src/",
-	"releasenote": "added `update` and `where` in SqlQuery",
+	"releasenote": "exec query migrate from transaction into query class, status added, and another",
 	"contributors": ["odanylyshyn"],
 	"dependencies": { }
 }

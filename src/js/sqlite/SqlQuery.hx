@@ -1,16 +1,17 @@
 package js.sqlite;
 
 import Std.is;
+import js.sqlite.WebSqlExtern.WebSQLTransaction;
 
-class SqlQuery extends DbQueryResult {
-    public var sqlExpr(get, null):String = '';
+class SqlQuery extends DbResult {
+    public var sqlExpr(default, null):String = "";
     public var order:Order = Order.ASCENDING;
     public var limit:Int = 0;
 
     private var sqlOperator:SqlOperator;
-    private var tableName:String = '';
+    private var tableName:String = "";
     private var setsMap:Map<String, String>;
-    private var whereStr:String = '';
+    private var whereStr:String = "";
 
     /**
      * arg1 - sql expression or tableName
@@ -44,15 +45,15 @@ class SqlQuery extends DbQueryResult {
     // "where" section
 
     public inline function whereEq(fieldName:String, value:Any):Void {
-        whereSign(fieldName, '=', value);
+        whereSign(fieldName, "=", value);
     }
 
     public function whereSign(fieldName:String, sign:String, value:Any):Void {
-        whereStr = '`' + fieldName + '`' + sign + "'" + valueToStr(value) + "'";
+        whereStr = "`" + fieldName + "`" + sign + "'" + valueToStr(value) + "'";
     }
 
     public inline function whereId(rowId:Int):Void {
-        whereSign('rowid', '=', ''+rowId);
+        whereSign("rowid", "=", ""+rowId);
     }
 
     public function whereList(fieldName:String, varList:Array<Any>):Void {
@@ -60,26 +61,20 @@ class SqlQuery extends DbQueryResult {
         var whereArr:Array<String> = [];
         for (i in 0...varList.length) {
             vs = valueToStr(varList[i]);
-            whereArr.push('`' + fieldName + "`='" + vs + "'");
+            whereArr.push("`" + fieldName + "`='" + vs + "'");
         }
-        whereStr = whereArr.join(' or ');
+        whereStr = whereArr.join(" or ");
     }
 
     public function whereMatch(fieldName:String, likePattern:String):Void {
-        whereStr = '`' + fieldName + "` like '" + likePattern + "'";
+        whereStr = "`" + fieldName + "` like '" + likePattern + "'";
     }
 
 
     ////////////////////////////// private ///////////////////////////////////
 
-    private function valueToStr(value:Any):String {
-        var strVal:String = '';
-        if(is(value, Bool)) strVal = value ? '1' : '0';
-        else strVal = '' + value;
-        return strVal;
-    }
-
-    private function get_sqlExpr():String {
+    @:allow(js.sqlite.Transaction)
+    private function exec(tObj:WebSQLTransaction):Void {
         if(sqlExpr == '') {
             switch (sqlOperator) {
                 case INSERT: sqlExpr = makeInsertExpr();
@@ -88,31 +83,38 @@ class SqlQuery extends DbQueryResult {
                 case SELECT: sqlExpr = makeSelectExpr();
             }
         }
-        return sqlExpr;
+        tObj.executeSql(sqlExpr, []);
+    }
+
+    private function valueToStr(value:Any):String {
+        var strVal:String = "";
+        if(is(value, Bool)) strVal = value ? "1" : "0";
+        else strVal = "" + value;
+        return strVal;
     }
 
     private function makeInsertExpr():String {
         var keys = [];
         var vals = [];
         for(key in setsMap.keys()) {
-            keys.push('`' + key + '`');
+            keys.push("`" + key + "`");
             vals.push("'" + setsMap[key] + "'");
         }
-        var fields:String = keys.join(',');
-        var values:String = vals.join(',');
-        return 'insert into `' + tableName + '`(' + fields + ') values(' + values + ')';
+        var fields:String = keys.join(",");
+        var values:String = vals.join(",");
+        return 'insert into `$tableName` ($fields) values($values)';
     }
 
     private function makeUpdateExpr():String {
         var setArr:Array<String> = [];
         for(key in setsMap.keys()) {
-            setArr.push('`' + key + "`='" + setsMap[key] + "'");
+            setArr.push("`" + key + "`='" + setsMap[key] + "'");
         }
-        return 'update `' + tableName + '` set ' + setArr.join(', ') + ' where ' + whereStr;
+        return 'update `$tableName` set ' + setArr.join(", ") + " where " + whereStr;
     }
 
     private function makeDeleteExpr():String {
-        return 'delete from `' + tableName + '` where ' + whereStr;
+        return 'delete from `$tableName` where $whereStr';
     }
 
     private function makeSelectExpr():String {
