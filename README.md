@@ -1,5 +1,6 @@
 ### under construction
-This project is in the initial stage of development. Most of the functionality is still planned.
+The project is under development. Some functional has not been implemented yet.
+In this description, working examples are given (you can check them by opening the file /test/test.html)
 
 # Examples
 
