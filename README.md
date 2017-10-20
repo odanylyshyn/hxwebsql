@@ -2,6 +2,9 @@
 The project is under development. Some functional has not been implemented yet.
 In this description, working examples are given (you can check them by opening the file /test/test.html)
 
+### Haxe version
+Use Haxe version 3 and more
+
 # Examples
 
 ### Open database
