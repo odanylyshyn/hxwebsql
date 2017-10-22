@@ -2,6 +2,8 @@ package js.sqlite;
 
 import Std.is;
 import js.sqlite.WebSqlExtern.WebSQLTransaction;
+import js.sqlite.WebSqlExtern.SQLiteResult;
+import js.sqlite.WebSqlExtern.WebSQLRows;
 
 class SqlQuery extends DbResult {
     public var sqlExpr(default, null):String = "";
@@ -39,7 +41,7 @@ class SqlQuery extends DbResult {
             setsMap.set(fieldName, valueToStr( Reflect.field(data, fieldName)) );
         }
     }
-
+    // TODO: returning insert ID
 
 
     // "where" section
@@ -75,6 +77,7 @@ class SqlQuery extends DbResult {
 
     @:allow(js.sqlite.Transaction)
     private function exec(tObj:WebSQLTransaction):Void {
+        status = DbStatus.RUNNING;
         if(sqlExpr == '') {
             switch (sqlOperator) {
                 case INSERT: sqlExpr = makeInsertExpr();
@@ -83,7 +86,26 @@ class SqlQuery extends DbResult {
                 case SELECT: sqlExpr = makeSelectExpr();
             }
         }
-        tObj.executeSql(sqlExpr, []);
+        tObj.executeSql(sqlExpr, [], sqlSuccessHandler, sqlErrorHandler);
+    }
+
+    private function sqlSuccessHandler(tx:WebSQLTransaction, result:SQLiteResult):Void {
+        status = DbStatus.CLOSE;
+        if(!isHandled) {
+            //if(handler) handler(this);
+            isHandled = true;
+        }
+    }
+
+    private function sqlErrorHandler(tx:WebSQLTransaction, errorMsg:String):Void {
+        isSuccess = false;
+        errorCode = ErrorCode.SQL_ERROR;
+        errorMessage = errorMsg;
+        status = DbStatus.CLOSE;
+        if(!isHandled) {
+            //if(handler) handler(this);
+            isHandled = true;
+        }
     }
 
     private function valueToStr(value:Any):String {
