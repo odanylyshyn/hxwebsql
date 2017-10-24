@@ -5,8 +5,8 @@ class DbResult {
     public var errorCode(default, null):ErrorCode;
     public var errorMessage(default, null):String;
     public var status(default, null):DbStatus;
-    public var handler:DbResult->Void;
-    public var isHandled(default, null):Bool;
+    public var handler:?DbResult->Void;
+    private var isHandled:Bool;
 
     public function new():Void {
         isSuccess = true;
@@ -15,4 +15,24 @@ class DbResult {
         status = DbStatus.OPEN;
         isHandled = false;
     }
+
+    private function successHandler():Void {
+        status = DbStatus.CLOSE;
+        if(!isHandled) {
+            if(handler != null) handler();
+            isHandled = true;
+        }
+    }
+
+    private function errorHandler(errorMsg:String):Void {
+        isSuccess = false;
+        errorCode = ErrorCode.SQL_ERROR;
+        errorMessage = errorMsg;
+        status = DbStatus.CLOSE;
+        if(!isHandled) {
+            if(handler != null) handler();
+            isHandled = true;
+        }
+    }
+
 }

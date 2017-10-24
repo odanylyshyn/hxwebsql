@@ -90,22 +90,12 @@ class SqlQuery extends DbResult {
     }
 
     private function sqlSuccessHandler(tx:WebSQLTransaction, result:SQLiteResult):Void {
-        status = DbStatus.CLOSE;
-        if(!isHandled) {
-            //if(handler) handler(this);
-            isHandled = true;
-        }
+        super.successHandler();
+        // TOSO: обробка результатів
     }
 
     private function sqlErrorHandler(tx:WebSQLTransaction, errorMsg:String):Void {
-        isSuccess = false;
-        errorCode = ErrorCode.SQL_ERROR;
-        errorMessage = errorMsg;
-        status = DbStatus.CLOSE;
-        if(!isHandled) {
-            //if(handler) handler(this);
-            isHandled = true;
-        }
+        super.errorHandler(errorMsg);
     }
 
     private function valueToStr(value:Any):String {

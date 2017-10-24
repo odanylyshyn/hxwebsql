@@ -4,9 +4,9 @@
 	"license": "MIT",
 	"tags": ["haxe","sqlite","websql","js","javascript","cordova","phonegap","android","ios"],
 	"description": "",
-	"version": "0.1.3",
+	"version": "0.2.0",
 	"classPath": "src/",
-	"releasenote": "exec query migrate from transaction into query class, status added, and another",
+	"releasenote": "handlers added, executing as queue",
 	"contributors": ["odanylyshyn"],
 	"dependencies": { }
 }

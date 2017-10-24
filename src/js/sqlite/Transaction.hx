@@ -8,8 +8,8 @@ class Transaction extends DbResult {
     private var queries:Array<SqlQuery>;
     private var queryKeys:Map<String, Int>;
     private var sqlDB:WebSQLDatabase;
-    private var currentQuery:SqlQuery;
-    
+    private var currentIndex:Int;
+    private var transObj:WebSQLTransaction;
 
     public function new(db:Database) {
         super();
@@ -38,21 +38,40 @@ class Transaction extends DbResult {
         return queries[queryKeys[key]];
     }
 
-    public function exec(?trHandler:Transaction->Void):Void {
+    public function exec():Void {
         if(queries.length == 0) {
             Browser.console.error("Cannot run a transaction without queries");
             return;
         }
         status = DbStatus.RUNNING;
-        sqlDB.transaction(transactionCallback);
+        sqlDB.transaction(transactionCallback, trErrorHandler, trSuccessHandler);
     }
 
     private function transactionCallback(tObj:WebSQLTransaction):Void {
-        // currentQuery = 
-        for (i in 0...queries.length) {
-            queries[i].exec(tObj);
-        }
-        // TODO: sequential call as queue instead of loop
+        transObj = tObj;
+        currentIndex = 0;
+        execCurrentQuery();
+    }
+
+    private function execCurrentQuery():Void {
+        trace('exec query $currentIndex');
+        queries[currentIndex].handler = nextQuery;
+        queries[currentIndex].exec(transObj);
+    }
+
+    private function nextQuery(?q:DbResult):Void {
+        queries[currentIndex].handler = null;
+        currentIndex++;
+        if(currentIndex < queries.length) execCurrentQuery();
+    }
+
+    private function trErrorHandler(msg:String):Void {
+        super.errorHandler(msg);
+    }
+
+    private function trSuccessHandler():Void {
+        super.successHandler();
+        trace('Transaction success!');
     }
 
 }
