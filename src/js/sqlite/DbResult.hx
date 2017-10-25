@@ -18,10 +18,7 @@ class DbResult {
 
     private function successHandler():Void {
         status = DbStatus.CLOSE;
-        if(!isHandled) {
-            if(handler != null) handler(this);
-            isHandled = true;
-        }
+        callHandler();
     }
 
     private function errorHandler(errorMsg:String):Void {
@@ -29,10 +26,14 @@ class DbResult {
         errorCode = ErrorCode.SQL_ERROR;
         errorMessage = errorMsg;
         status = DbStatus.CLOSE;
+        callHandler();
+    }
+
+    private function callHandler():Void {
         if(!isHandled) {
             if(handler != null) handler(this);
             isHandled = true;
         }
     }
-
+    
 }
