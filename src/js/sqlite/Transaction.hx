@@ -5,7 +5,7 @@ import js.sqlite.WebSqlExtern.WebSQLDatabase;
 import js.sqlite.WebSqlExtern.WebSQLTransaction;
 
 class Transaction extends DbResult {
-    private var queries:Array<SqlQuery>;
+    public var queries(default, null):Array<SqlQuery>;
     private var queryKeys:Map<String, Int>;
     private var sqlDB:WebSQLDatabase;
     private var currentIndex:Int;
@@ -59,7 +59,7 @@ class Transaction extends DbResult {
         queries[currentIndex].exec(transObj);
     }
 
-    private function nextQuery(?q:DbResult):Void {
+    private function nextQuery(q:DbResult):Void {
         queries[currentIndex].handler = null;
         currentIndex++;
         if(currentIndex < queries.length) execCurrentQuery();

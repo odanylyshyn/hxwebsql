@@ -1,9 +1,24 @@
 ### under construction
 The project is under development. Some functional has not been implemented yet.
 In this description, working examples are given (you can check them by opening the file /test/test.html)
+Current version: 0.2.1
 
 ### Haxe version
 Use Haxe version 3 and more
+
+### Release notes & TODO
+version | tasks | status
+----|-------------------
+0.1 | INSERT, UPDATE, DELETE & raw SQL | released
+0.2 | callbacks | released
+0.3 | SELECT & hanling result | TODO
+0.4 | returning rowID after INSERT | TODO
+0.5 | Creating table | TODO
+0.6 | Unique, primary key, types(?) | TODO
+0.7 | Drop table & vacuum | TODO
+0.8 | Testing script | TODO
+0.9 | Debugging for chrome & cordova plugin | TODO
+1.0 | Full documentation | TODO
 
 # Examples
 
@@ -33,7 +48,12 @@ var q2 = new SqlQuery('records', SqlOperator.INSERT);
 q2.set('username', 'Joe');
 q2.set('score', 456);
 tr.addQuery(q2);
-
+tr.handler = function(res:DbResult):Void {
+    trace(res.isSuccess);
+    // review of completed transaction:
+    var tx = cast(res, Transaction);
+    trace(tx.queries);
+};
 tr.exec();
 ```
 

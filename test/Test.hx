@@ -6,6 +6,7 @@ import js.sqlite.Database;
 import js.sqlite.Transaction;
 import js.sqlite.SqlQuery;
 import js.sqlite.SqlOperator;
+import js.sqlite.DbResult;
 
 class Test {
     static private var instance:Test;
@@ -47,6 +48,11 @@ class Test {
         q2.set('username', 'Joe');
         q2.set('score', 456);
         tr.addQuery(q2);
+        tr.handler = function(res:DbResult):Void {
+            trace(res.isSuccess);
+            var tx = cast(res, Transaction);
+            trace(tx.queries);
+        };
         tr.exec();
     }
 
