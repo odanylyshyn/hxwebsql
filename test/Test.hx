@@ -54,6 +54,16 @@ class Test {
             trace(tx.queries);
         };
         tr.exec();
+
+        /*
+        var tr2 = new Transaction(db);
+        var q3 = new SqlQuery('records', SqlOperator.SELECT);
+        q3.selectFields = ['username', 'score'];
+        q3.whereEq('username', 'Joe');
+        q3.limit = 10;
+        tr2.addQuery(q3);
+        tr2.exec();
+        */
     }
 
     private function insertRowMset():Void {

@@ -6,9 +6,10 @@ import js.sqlite.WebSqlExtern.SQLiteResult;
 import js.sqlite.WebSqlExtern.WebSQLRows;
 
 class SqlQuery extends DbResult {
-    public var sqlExpr(default, null):String = "";
+    public var sqlExpression(default, null):String = "";
     public var order:Order = Order.ASCENDING;
     public var limit:Int = 0;
+    public var selectFields:Array<String>;
 
     private var sqlOperator:SqlOperator;
     private var tableName:String = "";
@@ -22,15 +23,12 @@ class SqlQuery extends DbResult {
     public function new(arg1:String, ?arg2:SqlOperator) {
         super();
         setsMap = new Map();
+        selectFields = [];
         if(arg2 != null) {
             tableName = arg1;
             sqlOperator = arg2;
-        } else sqlExpr = arg1;
+        } else sqlExpression = arg1;
     }
-
-
-
-    // "set" section
 
     public function set(fieldName:String, value:Any):Void {
         setsMap.set(fieldName, valueToStr(value));
@@ -41,10 +39,6 @@ class SqlQuery extends DbResult {
             setsMap.set(fieldName, valueToStr( Reflect.field(data, fieldName)) );
         }
     }
-    // TODO: returning insert ID
-
-
-    // "where" section
 
     public inline function whereEq(fieldName:String, value:Any):Void {
         whereSign(fieldName, "=", value);
@@ -78,20 +72,20 @@ class SqlQuery extends DbResult {
     @:allow(js.sqlite.Transaction)
     private function exec(tObj:WebSQLTransaction):Void {
         status = DbStatus.RUNNING;
-        if(sqlExpr == '') {
+        if(sqlExpression == '') {
             switch (sqlOperator) {
-                case INSERT: sqlExpr = makeInsertExpr();
-                case UPDATE: sqlExpr = makeUpdateExpr();
-                case DELETE: sqlExpr = makeDeleteExpr();
-                case SELECT: sqlExpr = makeSelectExpr();
+                case INSERT: sqlExpression = makeInsertExpr();
+                case UPDATE: sqlExpression = makeUpdateExpr();
+                case DELETE: sqlExpression = makeDeleteExpr();
+                case SELECT: sqlExpression = makeSelectExpr();
             }
         }
-        tObj.executeSql(sqlExpr, [], sqlSuccessHandler, sqlErrorHandler);
+        tObj.executeSql(sqlExpression, [], sqlSuccessHandler, sqlErrorHandler);
     }
 
     private function sqlSuccessHandler(tx:WebSQLTransaction, result:SQLiteResult):Void {
         super.successHandler();
-        // TOSO: обробка результатів
+        // TODO: handle of results
     }
 
     private function sqlErrorHandler(tx:WebSQLTransaction, errorMsg:String):Void {
@@ -130,8 +124,13 @@ class SqlQuery extends DbResult {
     }
 
     private function makeSelectExpr():String {
-        // TODO
-        return '';
+        var fields:String;
+        if(selectFields.length > 0) fields = "`" + selectFields.join("`,`") + "`";
+        else fields = "*";
+        var expr:String = 'select $fields from `$tableName` where $whereStr order by $order';
+        if(limit > 0) expr += ' limit $limit';
+        trace(expr);
+        return expr;
     }
     
 }

@@ -4,9 +4,9 @@
 	"license": "MIT",
 	"tags": ["haxe","sqlite","websql","js","javascript","cordova","phonegap","android","ios"],
 	"description": "",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"classPath": "src/",
-	"releasenote": "callbacks",
+	"releasenote": "see to readme.md",
 	"contributors": ["odanylyshyn"],
 	"dependencies": { }
 }
