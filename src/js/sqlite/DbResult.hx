@@ -1,5 +1,7 @@
 package js.sqlite;
 
+import js.sqlite.WebSqlExtern.SQLError;
+
 class DbResult {
     public var isSuccess(default, null):Bool;
     public var errorCode(default, null):ErrorCode;
@@ -21,10 +23,10 @@ class DbResult {
         callHandler();
     }
 
-    private function errorHandler(errorMsg:String):Void {
+    private function errorHandler(error:SQLError):Void {
         isSuccess = false;
         errorCode = ErrorCode.SQL_ERROR;
-        errorMessage = errorMsg;
+        errorMessage = error.message;
         status = DbStatus.CLOSE;
         callHandler();
     }

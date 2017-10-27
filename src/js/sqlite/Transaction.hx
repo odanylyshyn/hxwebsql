@@ -3,6 +3,7 @@ package js.sqlite;
 import js.Browser;
 import js.sqlite.WebSqlExtern.WebSQLDatabase;
 import js.sqlite.WebSqlExtern.WebSQLTransaction;
+import js.sqlite.WebSqlExtern.SQLError;
 
 class Transaction extends DbResult {
     public var queries(default, null):Array<SqlQuery>;
@@ -30,6 +31,13 @@ class Transaction extends DbResult {
         queries.push(q);
         if(key != null) {
             queryKeys[key] = queries.length - 1;
+        }
+        if(q.isReturnId) {
+            var q2 = new SqlQuery('SELECT last_insert_rowid() as rowid');
+            queries.push(q2);
+            if(key != null) {
+                queryKeys[key + '_rowid'] = queries.length - 1;
+            }
         }
     }
 
@@ -65,8 +73,8 @@ class Transaction extends DbResult {
         if(currentIndex < queries.length) execCurrentQuery();
     }
 
-    private function trErrorHandler(msg:String):Void {
-        super.errorHandler(msg);
+    private function trErrorHandler(error:SQLError):Void {
+        super.errorHandler(error);
     }
 
     private function trSuccessHandler():Void {

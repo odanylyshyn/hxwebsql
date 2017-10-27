@@ -7,6 +7,7 @@ import js.sqlite.Transaction;
 import js.sqlite.SqlQuery;
 import js.sqlite.SqlOperator;
 import js.sqlite.DbResult;
+import js.sqlite.Order;
 
 class Test {
     static private var instance:Test;
@@ -26,6 +27,9 @@ class Test {
         getElem('btnUpdate').addEventListener('click', updateWhere);
         getElem('btnUpdateList').addEventListener('click', updateWhereList);
         getElem('btnUpdateMatch').addEventListener('click', updateWhereMatch);
+        getElem('btnDeleteMatch').addEventListener('click', deleteWhereEq);
+        getElem('btnSelect1').addEventListener('click', select1);
+        getElem('btnSelect2').addEventListener('click', select2);
     }
 
     inline private function getElem(id:String):Element {
@@ -47,23 +51,15 @@ class Test {
         var q2 = new SqlQuery('records', SqlOperator.INSERT);
         q2.set('username', 'Joe');
         q2.set('score', 456);
-        tr.addQuery(q2);
+        q2.isReturnId = true;
+        tr.addQuery(q2, 'queryName');
         tr.handler = function(res:DbResult):Void {
             trace(res.isSuccess);
             var tx = cast(res, Transaction);
             trace(tx.queries);
+            trace(tx.getQuery('queryName_rowid').rows[0].rowid);
         };
         tr.exec();
-
-        /*
-        var tr2 = new Transaction(db);
-        var q3 = new SqlQuery('records', SqlOperator.SELECT);
-        q3.selectFields = ['username', 'score'];
-        q3.whereEq('username', 'Joe');
-        q3.limit = 10;
-        tr2.addQuery(q3);
-        tr2.exec();
-        */
     }
 
     private function insertRowMset():Void {
@@ -102,6 +98,43 @@ class Test {
         q.set('score', 1000);
         q.whereMatch('username', '%er');
         tr.addQuery(q);
+        tr.exec();
+    }
+
+    private function deleteWhereEq():Void {
+        var tr = new Transaction(db);
+        var q = new SqlQuery('records', SqlOperator.DELETE);
+        q.whereEq('username', 'Joe');
+        tr.addQuery(q);
+        tr.exec();
+    }
+
+    private function select1():Void {
+        var tr = new Transaction(db);
+        var q = new SqlQuery('records', SqlOperator.SELECT);
+        q.selectFields = ['username', 'score'];
+        q.whereEq('username', 'Joe');
+        tr.addQuery(q);
+        tr.handler = function(res:DbResult):Void {
+            trace(res.isSuccess);
+            var tx = cast(res, Transaction);
+            trace(tx.queries);
+        };
+        tr.exec();
+    }
+
+    private function select2():Void {
+        var tr = new Transaction(db);
+        var q = new SqlQuery('records', SqlOperator.SELECT);
+        q.limit = 5;
+        q.orderFields = ['score'];
+        q.order = Order.DESCENDING;
+        tr.addQuery(q);
+        tr.handler = function(res:DbResult):Void {
+            trace(res.isSuccess);
+            var tx = cast(res, Transaction);
+            trace(tx.queries);
+        };
         tr.exec();
     }
 

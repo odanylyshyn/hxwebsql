@@ -46,7 +46,14 @@ tr.addQuery(q1);
 var q2 = new SqlQuery('records', SqlOperator.INSERT);
 q2.set('username', 'Joe');
 q2.set('score', 456);
-tr.addQuery(q2);
+q2.isReturnId = true;
+tr.addQuery(q2, 'queryName');
+tr.handler = function(res:DbResult):Void {
+    trace(res.isSuccess);
+    var tx = cast(res, Transaction);
+    trace(tx.queries);
+    trace(tx.getQuery('queryName_rowid').rows[0].rowid);
+};
 
 tr.exec();</pre>
 
@@ -113,6 +120,59 @@ tr.addQuery(q);
 
 tr.exec();</pre>
 
+
+
+
+		<hr>
+
+		<h3>Delete</h3>
+		<button id="btnDeleteMatch">RUN</button>
+		<pre>
+var tr = new Transaction(db);
+
+var q = new SqlQuery('records', SqlOperator.DELETE);
+q1.whereEq('username', 'Joe');
+tr.addQuery(q);
+
+tr.exec();</pre>
+
+
+
+		<hr>
+
+		<h3>Select fields with "where"</h3>
+		<button id="btnSelect1">RUN</button>
+		<pre>
+var tr = new Transaction(db);
+var q = new SqlQuery('records', SqlOperator.SELECT);
+q.selectFields = ['username', 'score'];
+q.whereEq('username', 'Joe');
+tr.addQuery(q);
+tr.handler = function(res:DbResult):Void {
+    trace(res.isSuccess);
+    var tx = cast(res, Transaction);
+    trace(tx.queries);
+};
+tr.exec();</pre>
+
+
+		<hr>
+
+		<h3>Select all with order and limit</h3>
+		<button id="btnSelect2">RUN</button>
+		<pre>
+var tr = new Transaction(db);
+var q = new SqlQuery('records', SqlOperator.SELECT);
+q.limit = 5;
+q.orderFields = ['score'];
+q.order = Order.DESCENDING;
+tr.addQuery(q);
+tr.handler = function(res:DbResult):Void {
+    trace(res.isSuccess);
+    var tx = cast(res, Transaction);
+    trace(tx.queries);
+};
+tr.exec();</pre>
 
 		
 

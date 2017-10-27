@@ -4,7 +4,7 @@ package js.sqlite;
 extern class WebSQLDatabase {
     public function transaction(
         txnCallback: WebSQLTransaction -> Void,
-        ?errorCallback: String -> Void,
+        ?errorCallback: SQLError -> Void,
         ?successCallback: Void -> Void
     ):Void;
 }
@@ -15,7 +15,7 @@ extern class WebSQLTransaction {
         sql:String,
         args:Array<String>,
         ?sqlCallback: WebSQLTransaction -> SQLiteResult -> Void,
-        ?sqlErrorCallback: WebSQLTransaction -> String -> Void
+        ?sqlErrorCallback: WebSQLTransaction -> SQLError -> Void
     ):Void;
 }
 
@@ -28,4 +28,10 @@ extern class SQLiteResult {
 extern class WebSQLRows {
     public var length:Int;
     public function item(i:Int):Dynamic;
+}
+
+@:native("SQLError")
+extern class SQLError {
+    public var code:Int;
+    public var message:String;
 }
