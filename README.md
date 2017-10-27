@@ -82,7 +82,7 @@ tr.addQuery(q1);
 
 var q2 = new SqlQuery('records', SqlOperator.UPDATE);
 q2.set('score', 800);
-q2.whereId(3);                   // WHERE `rowid`='3'
+q2.whereId(3);                   // WHERE `rowid`=3
 tr.addQuery(q2);
 
 tr.exec();
