@@ -86,7 +86,9 @@ class SqlQuery extends DbResult {
                 case SELECT: sqlExpression = makeSelectExpr();
             }
         }
-        tObj.executeSql(sqlExpression, [], sqlSuccessHandler, sqlErrorHandler);
+        if(status == DbStatus.RUNNING)
+            tObj.executeSql(sqlExpression, [], sqlSuccessHandler, sqlErrorHandler);
+        else callHandler();
     }
 
     private function sqlSuccessHandler(tx:WebSQLTransaction, result:SQLiteResult):Void {
@@ -109,6 +111,7 @@ class SqlQuery extends DbResult {
     }
 
     private function makeInsertExpr():String {
+        if(!checkSets()) return "";
         var keys = [];
         var vals = [];
         for(key in setsMap.keys()) {
@@ -121,6 +124,8 @@ class SqlQuery extends DbResult {
     }
 
     private function makeUpdateExpr():String {
+        if(!checkSets()) return "";
+        if(!checkWhere()) return "";
         var setArr:Array<String> = [];
         for(key in setsMap.keys()) {
             setArr.push("`" + key + "`=" + stringify(setsMap[key]));
@@ -129,7 +134,7 @@ class SqlQuery extends DbResult {
     }
 
     private function makeDeleteExpr():String {
-        if(whereStr == "") return ""; // TODO: using error
+        if(!checkWhere()) return "";
         return 'delete from `$tableName` $whereStr';
     }
 
@@ -143,8 +148,29 @@ class SqlQuery extends DbResult {
         
         var expr:String = 'select $fields from `$tableName` $whereStr $orderStr';
         if(limit > 0) expr += ' limit $limit';
-        trace(expr);
         return expr;
+    }
+
+    private function checkSets():Bool {
+        if(Lambda.count(setsMap) == 0) {
+            isSuccess = false;
+            errorCode = ErrorCode.USING_ERROR;
+            errorMessage = "Cannot use queries INSERT/UPDATE without param sets";
+            status = DbStatus.CLOSE;
+            return false;
+        }
+        return true;
+    }
+
+    private function checkWhere():Bool {
+        if(whereStr == "") {
+            isSuccess = false;
+            errorCode = ErrorCode.USING_ERROR;
+            errorMessage = 'Cannot use queries UPDATE/DELETE without "where" sets';
+            status = DbStatus.CLOSE;
+            return false;
+        }
+        return true;
     }
     
 }

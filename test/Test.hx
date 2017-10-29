@@ -80,6 +80,10 @@ class Test {
         q2.set('score', 800);
         q2.whereId(3);
         tr.addQuery(q2);
+        tr.handler = function(res:DbResult):Void {
+            var tx = cast(res, Transaction);
+            trace(tx.queries);
+        };
         tr.exec();
     }
 
@@ -106,6 +110,10 @@ class Test {
         var q = new SqlQuery('records', SqlOperator.DELETE);
         q.whereEq('username', 'Joe');
         tr.addQuery(q);
+        tr.handler = function(res:DbResult):Void {
+            var tx = cast(res, Transaction);
+            trace(tx.queries);
+        };
         tr.exec();
     }
 

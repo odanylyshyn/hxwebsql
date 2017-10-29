@@ -3,7 +3,7 @@
 	"url": "https://github.com/odanylyshyn/hxwebsql",
 	"license": "MIT",
 	"tags": ["haxe","sqlite","websql","js","javascript","cordova","phonegap","android","ios"],
-	"description": "",
+	"description": "Haxe lib for using cordova sqlite plugin (or browser websql, if plugin missing) in html-applications.",
 	"version": "0.4.0",
 	"classPath": "src/",
 	"releasenote": "see to readme.md",

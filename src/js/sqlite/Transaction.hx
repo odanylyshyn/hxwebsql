@@ -1,6 +1,5 @@
 package js.sqlite;
 
-import js.Browser;
 import js.sqlite.WebSqlExtern.WebSQLDatabase;
 import js.sqlite.WebSqlExtern.WebSQLTransaction;
 import js.sqlite.WebSqlExtern.SQLError;
@@ -21,11 +20,11 @@ class Transaction extends DbResult {
 
     public function addQuery(q:SqlQuery, ?key:String):Void {
         if(status == DbStatus.RUNNING) {
-            Browser.console.error("Cannot add a request to a running transaction");
+            throw("Cannot add a request to a running transaction");
             return;
         }
         if(status == DbStatus.CLOSE) {
-            Browser.console.error("Cannot add a request to a closed transaction");
+            throw("Cannot add a request to a closed transaction");
             return;
         }
         queries.push(q);
@@ -48,7 +47,7 @@ class Transaction extends DbResult {
 
     public function exec():Void {
         if(queries.length == 0) {
-            Browser.console.error("Cannot run a transaction without queries");
+            throw("Cannot run a transaction without queries");
             return;
         }
         status = DbStatus.RUNNING;
@@ -62,7 +61,6 @@ class Transaction extends DbResult {
     }
 
     private function execCurrentQuery():Void {
-        trace('exec query $currentIndex');
         queries[currentIndex].handler = nextQuery;
         queries[currentIndex].exec(transObj);
     }
@@ -79,7 +77,6 @@ class Transaction extends DbResult {
 
     private function trSuccessHandler():Void {
         super.successHandler();
-        trace('Transaction success!');
     }
 
 }
