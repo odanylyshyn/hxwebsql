@@ -2,24 +2,10 @@
 The project is under development. Some functional has not been implemented yet.
 In this description, working examples are given (you can check them by opening the file /test/test.html)
 
-Current version: 0.4.0
+[Bug in transaction](https://github.com/odanylyshyn/hxwebsql/issues/3)
 
 ### Haxe version
 Use Haxe version 3 and more
-
-### Release notes & TODO
-version | tasks | status
-----|----------|--------
-0.1 | INSERT, UPDATE, DELETE & raw SQL | released
-0.2 | callbacks | released
-0.3 | SELECT & hanling result | released
-0.4 | returning rowID after INSERT | released
-0.5 | Creating table | TODO
-0.6 | Unique, primary key, types | TODO
-0.7 | Drop table & vacuum | TODO
-0.8 | Testing script | TODO
-0.9 | Debugging for chrome & cordova plugin | TODO
-1.0 | Full documentation | TODO
 
 # Examples
 
