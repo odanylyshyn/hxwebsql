@@ -4,7 +4,7 @@ import js.sqlite.WebSqlExtern.WebSQLDatabase;
 import js.sqlite.WebSqlExtern.WebSQLTransaction;
 import js.sqlite.WebSqlExtern.SQLError;
 
-class Transaction extends DbResult {
+class Transaction {
     public var queries(default, null):Array<SqlQuery>;
     private var queryKeys:Map<String, Int>;
     private var sqlDB:WebSQLDatabase;
@@ -50,17 +50,20 @@ class Transaction extends DbResult {
             throw("Cannot run a transaction without queries");
             return;
         }
-        status = DbStatus.RUNNING;
         sqlDB.transaction(transactionCallback, trErrorHandler, trSuccessHandler);
     }
 
     private function transactionCallback(tObj:WebSQLTransaction):Void {
-        transObj = tObj;
+        for (i in 0...queries.length) {
+            queries[i].exec(tObj);
+        }
+
+        /*transObj = tObj;
         currentIndex = 0;
-        execCurrentQuery();
+        execCurrentQuery();*/
     }
 
-    private function execCurrentQuery():Void {
+    /*private function execCurrentQuery():Void {
         queries[currentIndex].handler = nextQuery;
         queries[currentIndex].exec(transObj);
     }
@@ -69,7 +72,7 @@ class Transaction extends DbResult {
         queries[currentIndex].handler = null;
         currentIndex++;
         if(currentIndex < queries.length) execCurrentQuery();
-    }
+    }*/
 
     private function trErrorHandler(error:SQLError):Void {
         super.errorHandler(error);

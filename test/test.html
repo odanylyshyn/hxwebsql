@@ -27,9 +27,8 @@
 		<h3>Create table</h3>
 		<button id="btnCreateTable">RUN</button>
 		<pre>
-var tr = new Transaction(db);
-tr.addQuery( new SqlQuery('CREATE TABLE IF NOT EXISTS records (username, score)') );
-tr.exec();</pre>
+var q = new SqlQuery('CREATE TABLE IF NOT EXISTS records (username, score)');
+db.exec(q);</pre>
 		
 
 		<hr>
@@ -37,37 +36,20 @@ tr.exec();</pre>
 		<h3>Insert two rows</h3>
 		<button id="btnInsertTwo">RUN</button>
 		<pre>
-var tr = new Transaction(db);
 var q1 = new SqlQuery('records', SqlOperator.INSERT);
 q1.set('username', 'Bob');
 q1.set('score', 123);
-tr.addQuery(q1);
+db.exec(q1);
 
 var q2 = new SqlQuery('records', SqlOperator.INSERT);
-q2.set('username', 'Joe');
-q2.set('score', 456);
+q2.set({username: 'Joe', score: 456});
 q2.isReturnId = true;
-tr.addQuery(q2, 'queryName');
-tr.handler = function(res:DbResult):Void {
+q2.handler = function(res:SqlQuery):Void {
     trace(res.isSuccess);
-    var tx = cast(res, Transaction);
-    trace(tx.queries);
-    trace(tx.getQuery('queryName_rowid').rows[0].rowid);
+    trace(res.rows[0].rowid);
 };
+db.exec(q2);</pre>
 
-tr.exec();</pre>
-
-
-		<hr>
-
-		<h3>Insert row, using mset()</h3>
-		<button id="btnInsertMset">RUN</button>
-		<pre>
-var tr = new Transaction(db);
-var q = new SqlQuery('records', SqlOperator.INSERT);
-q.mset({username: 'Peter', score: 675});
-tr.addQuery(q);
-tr.exec();</pre>
 
 
 		<hr>
@@ -75,19 +57,16 @@ tr.exec();</pre>
 		<h3>Update</h3>
 		<button id="btnUpdate">RUN</button>
 		<pre>
-var tr = new Transaction(db);
-
 var q1 = new SqlQuery('records', SqlOperator.UPDATE);
 q1.set('score', 900);
-q1.whereEq('username', 'Joe');
-tr.addQuery(q1);
+q1.whereEq('username', 'Joe');   // WHERE `username`='Joe'
 
 var q2 = new SqlQuery('records', SqlOperator.UPDATE);
 q2.set('score', 800);
-q2.whereId(3);
-tr.addQuery(q2);
+q2.whereId(3);                   // WHERE `rowid`=3
 
-tr.exec();</pre>
+db.exec(q1);
+db.exec(q2);</pre>
 
 
 		<hr>
@@ -95,14 +74,10 @@ tr.exec();</pre>
 		<h3>Update, where list of variants</h3>
 		<button id="btnUpdateList">RUN</button>
 		<pre>
-var tr = new Transaction(db);
-
 var q = new SqlQuery('records', SqlOperator.UPDATE);
 q.set('score', 555);
-q.whereList('username', ['Bob', 'Joe']);
-tr.addQuery(q);
-
-tr.exec();</pre>
+q.whereList('username', ['Bob', 'Joe']);     // WHERE `username`='Bob' OR `username`='Joe'
+db.exec(q);</pre>
 
 
 
@@ -111,14 +86,10 @@ tr.exec();</pre>
 		<h3>Update, where match LIKE-pattern</h3>
 		<button id="btnUpdateMatch">RUN</button>
 		<pre>
-var tr = new Transaction(db);
-
 var q = new SqlQuery('records', SqlOperator.UPDATE);
 q.set('score', 1000);
-q.whereMatch('username', '%er');
-tr.addQuery(q);
-
-tr.exec();</pre>
+q.whereMatch('username', '%er');             // WHERE `username` LIKE '%er'
+db.exec(q);</pre>
 
 
 
@@ -128,13 +99,9 @@ tr.exec();</pre>
 		<h3>Delete</h3>
 		<button id="btnDeleteMatch">RUN</button>
 		<pre>
-var tr = new Transaction(db);
-
 var q = new SqlQuery('records', SqlOperator.DELETE);
-q1.whereEq('username', 'Joe');
-tr.addQuery(q);
-
-tr.exec();</pre>
+q.whereEq('username', 'Joe');
+db.exec(q);</pre>
 
 
 
@@ -143,17 +110,14 @@ tr.exec();</pre>
 		<h3>Select fields with "where"</h3>
 		<button id="btnSelect1">RUN</button>
 		<pre>
-var tr = new Transaction(db);
 var q = new SqlQuery('records', SqlOperator.SELECT);
 q.selectFields = ['username', 'score'];
 q.whereEq('username', 'Joe');
-tr.addQuery(q);
-tr.handler = function(res:DbResult):Void {
+q.handler = function(res:SqlQuery):Void {
     trace(res.isSuccess);
-    var tx = cast(res, Transaction);
-    trace(tx.queries);
+    trace(res.rows);
 };
-tr.exec();</pre>
+db.exec(q);</pre>
 
 
 		<hr>
@@ -161,18 +125,15 @@ tr.exec();</pre>
 		<h3>Select all with order and limit</h3>
 		<button id="btnSelect2">RUN</button>
 		<pre>
-var tr = new Transaction(db);
 var q = new SqlQuery('records', SqlOperator.SELECT);
 q.limit = 5;
 q.orderFields = ['score'];
 q.order = Order.DESCENDING;
-tr.addQuery(q);
-tr.handler = function(res:DbResult):Void {
+q.handler = function(res:SqlQuery):Void {
     trace(res.isSuccess);
-    var tx = cast(res, Transaction);
-    trace(tx.queries);
+    trace(res.rows);
 };
-tr.exec();</pre>
+db.exec(q);</pre>
 
 		
 

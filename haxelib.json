@@ -4,9 +4,9 @@
 	"license": "MIT",
 	"tags": ["haxe","sqlite","websql","js","javascript","cordova","phonegap","android","ios"],
 	"description": "Haxe lib for using cordova sqlite plugin (or browser websql, if plugin missing) in html-applications.",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"classPath": "src/",
-	"releasenote": "see to readme.md",
+	"releasenote": "concept changed - simplified of using",
 	"contributors": ["odanylyshyn"],
 	"dependencies": { }
 }
