@@ -18,10 +18,10 @@ class Database {
         var isWebSQL = Reflect.hasField(Browser.window, "openDatabase");
         if(isPlugin) {
             sqlDB = untyped __js__("window.sqlitePlugin.openDatabase({0})", dbName + ".db");
-            dbType = "Webkit WebSQL";
+            dbType = "Cordova SQLite plugin";
         } else if(isWebSQL) {
             sqlDB = untyped __js__('window.openDatabase({0}, "", {0}, 256*1024)', dbName);
-            dbType = "Cordova SQLite plugin";
+            dbType = "Webkit WebSQL";
         } else {
             Browser.console.error("SQLite is not supported by your browser");
         }
