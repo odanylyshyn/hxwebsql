@@ -1,7 +1,3 @@
-### under construction
-The project is under development. Some functional has not been implemented yet.
-In this description, working examples are given (you can check them by opening the file /test/test.html)
-
 # Requirements
 Haxe 3.0 or higher.
 
