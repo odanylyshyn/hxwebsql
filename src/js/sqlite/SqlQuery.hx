@@ -1,8 +1,8 @@
 package js.sqlite;
 
 import Std.is;
-import js.sqlite.WebSqlExtern.SQLiteResult;
-import js.sqlite.WebSqlExtern.SQLError;
+import js.sqlite.externs.SQLiteResult;
+import js.sqlite.externs.SQLError;
 
 class SqlQuery {
     public var sqlExpression(default, null):String = "";

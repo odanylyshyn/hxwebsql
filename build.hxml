@@ -1,0 +1,5 @@
+-cp src
+-main test.Test
+-js test/test.js
+-D js-flatten
+-debug

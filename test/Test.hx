@@ -1,4 +1,4 @@
-package;
+package test;
 
 import js.Browser;
 import js.html.Element;
@@ -17,8 +17,6 @@ class Test {
 
     public function new():Void {
         db = new Database("TestDB");
-        getElem('nojs').style.display = 'none';
-        getElem('container').style.display = 'block';
         getElem('btnCreateTable').addEventListener('click', createTable);
         getElem('btnInsertTwo').addEventListener('click', insertTwoRows);
         getElem('btnUpdate').addEventListener('click', updateWhere);

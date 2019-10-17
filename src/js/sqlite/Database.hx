@@ -2,13 +2,10 @@ package js.sqlite;
 
 import Std.is;
 import js.Browser;
-import js.sqlite.WebSqlExtern.WebSQLDatabase;
-import js.sqlite.WebSqlExtern.WebSQLTransaction;
-import js.sqlite.WebSqlExtern.SQLiteResult;
-import js.sqlite.WebSqlExtern.SQLError;
+import js.sqlite.externs.*;
 
 class Database {
-    public var dbType(default, null):String;
+    public var dbTypeName(default, null):String;
     private var sqlDB:WebSQLDatabase;
     private var queries:Array<SqlQuery>;
     private var currentQuery:SqlQuery;
@@ -18,10 +15,10 @@ class Database {
         var isWebSQL = Reflect.hasField(Browser.window, "openDatabase");
         if(isPlugin) {
             sqlDB = untyped __js__("window.sqlitePlugin.openDatabase({0})", dbName + ".db");
-            dbType = "Cordova SQLite plugin";
+            dbTypeName = "Cordova SQLite plugin";
         } else if(isWebSQL) {
             sqlDB = untyped __js__('window.openDatabase({0}, "", {0}, 256*1024)', dbName);
-            dbType = "Webkit WebSQL";
+            dbTypeName = "Webkit WebSQL";
         } else {
             Browser.console.error("SQLite is not supported by your browser");
         }
